@@ -1,6 +1,7 @@
 import cv2, numpy as np
 # img1 = None
-img1 = cv2.imread('foto.jpeg')
+# img1 = cv2.imread('foto.jpeg')
+img1 = cv2.imread('foto1.jpg')
 
 # img = cv2.cvtColor(cv2.imread(f"imagens\imagemTeste.jpg"), cv2.COLOR_BGR2GRAY).flatten()
 # img = cv2.imread("imagens\imagemTeste.jpg", cv2.IMREAD_GRAYSCALE)
@@ -74,11 +75,16 @@ while cap.isOpened():
                 res = cv2.drawMatches(img1, kp1, img2, kp2, good_matches, None, \
                                     matchesMask=matchesMask,
                                     flags=cv2.DRAW_MATCHES_FLAGS_NOT_DRAW_SINGLE_POINTS)
+
         except:
             res = frame
 
     # emita o resultado
-    cv2.imshow(win_name, res)
+
+    ### Mostra imagem e os pontos iguais
+    # cv2.imshow(win_name, res)
+    ### Não moptra e pontos iguais
+    cv2.imshow(win_name, frame)
     key = cv2.waitKey(1)
     if key == 27:    # Esc, fim
             break
