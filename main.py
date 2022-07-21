@@ -1,11 +1,13 @@
 import traceback
+import time
 
+from win10toast import ToastNotifier
 import cv2, numpy as np
 
 def main():
-    img1 = cv2.imread('fotos/foto.png')
+
     win_name = 'Camera Matching'
-    MIN_MATCH = 70
+    MIN_MATCH = 80
     # ORB Geração de detectores  ---①
     detector = cv2.ORB_create(1000)
     # Flann Criar extrator ---②
@@ -22,6 +24,15 @@ def main():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
     while cap.isOpened():
+        try:
+            with open('nivel.txt','r') as f:
+                nivel = f.readline()
+                MIN_MATCH = int(nivel)
+
+        except:
+            MIN_MATCH = 90
+        # print(MIN_MATCH)
+        img1 = cv2.imread('fotos/foto.png')
         try:
 
             ret, frame = cap.read()
@@ -67,8 +78,16 @@ def main():
                                 pts = np.float32([ [[0,0]],[[0,h-1]],[[w-1,h-1]],[[w-1,0]] ])
                                 dst = cv2.perspectiveTransform(pts,mtrx)
                                 img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
-                                print('Parou')
-                                break
+                                print('Detectado')
+
+                                from plyer import notification
+
+                                notification.notify(
+                                  title="TCC",
+                                  message="Passou",
+                                  timeout=10
+                                )
+                                time.sleep(5)
                         # Desenhe pontos correspondentes com uma máscara ---⑨
                         res = cv2.drawMatches(img1, kp1, img2, kp2, good_matches, None, \
                                             matchesMask=matchesMask,
@@ -86,10 +105,6 @@ def main():
             key = cv2.waitKey(1)
             if key == 27:    # Esc, fim
                     break
-            # elif key == ord(' '): # Defina o ROI com a barra de espaço para definir img1
-            #     x,y,w,h = cv2.selectROI(win_name, frame, False)
-            #     if w and h:
-            #         img1 = frame[y:y+h, x:x+w]
         except:
             with open('log.txt','a') as f:
                 f.write(traceback.format_exc())

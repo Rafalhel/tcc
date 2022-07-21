@@ -17,10 +17,16 @@ def index():
     nomeFotoArmazenada = 'fotos/foto.png'
     if request.method == 'POST':
         fotoCarregada = request.files['fotoCarregada']
+        nivel = request.form.get('nivel')
+
+        if nivel != '':
+            with open('nivel.txt','w') as f:
+              f.write(nivel)
         if fotoCarregada.filename != '':
             fotoCarregada.save(nomeFotoArmazenada)
             fotoCarregada.save(f'fotos/{fotoCarregada.filename}')
             print(fotoCarregada)
+
     if os.path.isfile(nomeFotoArmazenada):
         arquivoExite = True
         try:
@@ -28,8 +34,8 @@ def index():
             width = img.width
             height = img.height
         except:
-          width = ''
-          height = ''
+            width = ''
+            height = ''
     else:
         width = ''
         height = ''
@@ -45,21 +51,22 @@ def removFoto():
 
 if __name__ == '__main__':
     # serve(app, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', debug=True, port=5000)
     # Import module
 
 
     # Initializing the wmi constructor
-    f = wmi.WMI()
+    # f = wmi.WMI()
+    #
+    # flag = 0
+    #
+    # # Iterating through all the running processes
+    # for process in f.Win32_Process():
+    #   if "tccApp.exe" == process.Name:
+    #     print("Application is Running")
+    #     flag = 1
+    #     break
+    #
+    # if flag == 0:
+    #   print("Application is not Running")
 
-    flag = 0
-
-    # Iterating through all the running processes
-    for process in f.Win32_Process():
-      if "tccApp.exe" == process.Name:
-        print("Application is Running")
-        flag = 1
-        break
-
-    if flag == 0:
-      print("Application is not Running")
-    app.run(host='0.0.0.0', debug=True, port=5000)
